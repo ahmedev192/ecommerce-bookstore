@@ -1,3 +1,7 @@
+using ecommerce_bookstore.Models.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+
 namespace ecommerce_bookstore
 {
     public class Program
@@ -8,7 +12,7 @@ namespace ecommerce_bookstore
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
