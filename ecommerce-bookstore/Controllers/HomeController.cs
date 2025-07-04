@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using ecommerce_bookstore.Models;
+using ecommerce_bookstore.Models.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ecommerce_bookstore.Controllers
@@ -7,11 +8,14 @@ namespace ecommerce_bookstore.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _dbContext;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger , ApplicationDbContext dbContext)
         {
             _logger = logger;
+            _dbContext = dbContext;
         }
+
 
         public IActionResult Index()
         {
