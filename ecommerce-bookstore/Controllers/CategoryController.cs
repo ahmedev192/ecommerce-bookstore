@@ -1,6 +1,7 @@
 ﻿using ecommerce_bookstore.Models;
 using ecommerce_bookstore.Models.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
 namespace ecommerce_bookstore.Controllers
@@ -25,9 +26,19 @@ namespace ecommerce_bookstore.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Category obj)
         {
+            if(obj.Name == obj.DisplayOrder.ToString())
+            {
+                ModelState.AddModelError("Custom " , "Name can't be equal Display Order");
+            }
+
+            if (ModelState.IsValid) { 
             await _db.Categories.AddAsync(obj);
             await _db.SaveChangesAsync();
             return RedirectToAction("Index");
+            }else
+            {
+                return View(obj);
+            }
         }
     }
 }
