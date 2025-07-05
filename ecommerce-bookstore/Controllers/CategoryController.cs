@@ -35,6 +35,8 @@ namespace ecommerce_bookstore.Controllers
             {
                 await _db.Categories.AddAsync(obj);
                 await _db.SaveChangesAsync();
+                TempData["success"] = "Category created successfully";
+
                 return RedirectToAction("Index");
             }
             else
@@ -67,6 +69,9 @@ namespace ecommerce_bookstore.Controllers
             {
                 _db.Categories.Update(obj);
                 await _db.SaveChangesAsync();
+                TempData["success"] = "Category updated successfully";
+
+
                 return RedirectToAction("Index");
             }
             else
@@ -101,6 +106,9 @@ namespace ecommerce_bookstore.Controllers
 
             _db.Categories.Remove(obj);
             await _db.SaveChangesAsync();
+            TempData["success"] = "Category deleted successfully";
+
+
             return RedirectToAction("Index");
 
 
