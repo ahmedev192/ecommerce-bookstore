@@ -1,6 +1,6 @@
 using System.Diagnostics;
+using BookStore.DataAccess.Data;
 using BookStore.Models;
-using BookStore.Models.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStore.Controllers

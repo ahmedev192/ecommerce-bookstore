@@ -1,4 +1,4 @@
-using BookStore.Models.Data;
+using BookStore.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
