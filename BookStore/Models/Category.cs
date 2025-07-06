@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ecommerce_bookstore.Models
+namespace BookStore.Models
 {
     public class Category
     {

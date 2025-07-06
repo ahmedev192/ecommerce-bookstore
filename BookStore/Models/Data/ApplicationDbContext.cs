@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace ecommerce_bookstore.Models.Data
+namespace BookStore.Models.Data
 {
     public class ApplicationDbContext : DbContext
     {

@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ecommerce_bookstore.Models.Data;
+using BookStore.Models.Data;
 
 #nullable disable
 
-namespace ecommerce_bookstore.Migrations
+namespace BookStore.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250625074214_Adding Category table ")]
@@ -24,7 +24,7 @@ namespace ecommerce_bookstore.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ecommerce_bookstore.Models.Category", b =>
+            modelBuilder.Entity("BookStore.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

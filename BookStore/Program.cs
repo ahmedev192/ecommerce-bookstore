@@ -1,8 +1,8 @@
-using ecommerce_bookstore.Models.Data;
+using BookStore.Models.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace ecommerce_bookstore
+namespace BookStore
 {
     public class Program
     {

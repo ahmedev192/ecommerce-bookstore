@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace ecommerce_bookstore.Migrations
+namespace BookStore.Migrations
 {
     /// <inheritdoc />
     public partial class AddingCategorytable : Migration

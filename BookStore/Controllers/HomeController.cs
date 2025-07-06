@@ -1,9 +1,9 @@
 using System.Diagnostics;
-using ecommerce_bookstore.Models;
-using ecommerce_bookstore.Models.Data;
+using BookStore.Models;
+using BookStore.Models.Data;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ecommerce_bookstore.Controllers
+namespace BookStore.Controllers
 {
     public class HomeController : Controller
     {

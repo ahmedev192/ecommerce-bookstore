@@ -1,10 +1,10 @@
-﻿using ecommerce_bookstore.Models;
-using ecommerce_bookstore.Models.Data;
+﻿using BookStore.Models;
+using BookStore.Models.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
-namespace ecommerce_bookstore.Controllers
+namespace BookStore.Controllers
 {
     public class CategoryController : Controller
     {
