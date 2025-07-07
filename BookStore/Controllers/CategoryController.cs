@@ -1,6 +1,6 @@
 ﻿using BookStore.DataAccess.Data;
+using BookStore.DataAccess.Repository.IRepository;
 using BookStore.Models;
-using BookStore.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,15 +8,15 @@ namespace BookStore.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ICategoryRepository _categoryRepo;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CategoryController(ICategoryRepository db)
+        public CategoryController(IUnitOfWork db)
         {
-            _categoryRepo = db;
+            _unitOfWork = db;
         }
         public  IActionResult Index()
         {
-            List<Category> objCategoryList =  _categoryRepo.GetAll().ToList();
+            List<Category> objCategoryList = _unitOfWork.Category.GetAll().ToList();
             return View(objCategoryList);
         }
         [HttpGet]
@@ -34,8 +34,8 @@ namespace BookStore.Controllers
 
             if (ModelState.IsValid)
             {
-                 _categoryRepo.Add(obj);
-                 _categoryRepo.Save();
+                _unitOfWork.Category.Add(obj);
+                 _unitOfWork.Save();
                 TempData["success"] = "Category created successfully";
 
                 return RedirectToAction("Index");
@@ -54,7 +54,7 @@ namespace BookStore.Controllers
             {
                 return NotFound();
             }
-            Category? categoryFromDB = _categoryRepo.Get(c => c.Id == id);
+            Category? categoryFromDB = _unitOfWork.Category.Get(c => c.Id == id);
             if (categoryFromDB == null)
             {
                 return NotFound();
@@ -68,8 +68,8 @@ namespace BookStore.Controllers
 
             if (ModelState.IsValid)
             {
-                _categoryRepo.Update(obj);
-                 _categoryRepo.Save();
+                _unitOfWork.Category.Update(obj);
+                 _unitOfWork.Save();
                 TempData["success"] = "Category updated successfully";
 
 
@@ -90,7 +90,7 @@ namespace BookStore.Controllers
             {
                 return NotFound();
             }
-            Category? categoryFromDB = _categoryRepo.Get(c => c.Id == id);
+            Category? categoryFromDB = _unitOfWork.Category.Get(c => c.Id == id);
             if (categoryFromDB == null)
             {
                 return NotFound();
@@ -102,11 +102,11 @@ namespace BookStore.Controllers
         {
 
 
-            Category? obj = _categoryRepo.Get(e=> e.Id == id);
+            Category? obj = _unitOfWork.Category.Get(e=> e.Id == id);
 
 
-            _categoryRepo.Remove(obj);
-            _categoryRepo.Save();
+            _unitOfWork.Category.Remove(obj);
+            _unitOfWork.Save();
             TempData["success"] = "Category deleted successfully";
 
 

@@ -1,8 +1,8 @@
 ﻿using BookStore.DataAccess.Data;
+using BookStore.DataAccess.Repository.IRepository;
 using BookStore.Models;
-using BookStore.Repository.IRepository;
 
-namespace BookStore.Repository
+namespace BookStore.DataAccess.Repository
 {
     public class CategoryRepository : Repository<Category> ,  ICategoryRepository
     {
@@ -13,10 +13,6 @@ namespace BookStore.Repository
         }
 
 
-        public void Save()
-        {
-            _db.SaveChanges();
-        }
 
         public void Update(Category obj)
         {

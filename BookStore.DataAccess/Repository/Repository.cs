@@ -2,7 +2,7 @@
 using BookStore.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookStore.Repository
+namespace BookStore.DataAccess.Repository
 {
     public class Repository<T> : IRepository.IRepository<T> where T : class
     {
