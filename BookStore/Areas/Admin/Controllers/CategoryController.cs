@@ -15,71 +15,72 @@ namespace BookStore.Areas.Admin.Controllers
         {
             _unitOfWork = db;
         }
-        public  IActionResult Index()
+        public IActionResult Index()
         {
             List<Category> objCategoryList = _unitOfWork.Category.GetAll().ToList();
             return View(objCategoryList);
         }
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
-        [HttpPost]
-        public  IActionResult Create(Category obj)
-        {
-            if (obj.Name == obj.DisplayOrder.ToString())
-            {
-                ModelState.AddModelError("Custom ", "Name can't be equal Display Order");
-            }
 
+        [HttpGet]
+        public IActionResult Upsert(int? id )
+        {
+            if (id == 0 || id == null)
+            {
+                return View();
+            }else
+            {
+
+                Category? categoryFromDB = _unitOfWork.Category.Get(c => c.Id == id);
+                if (categoryFromDB == null)
+                {
+                    return NotFound();
+                }
+                return View(categoryFromDB);
+            }
+        }
+
+
+        [HttpPost]
+        public IActionResult Upsert(Category obj)
+        {
             if (ModelState.IsValid)
             {
-                _unitOfWork.Category.Add(obj);
-                 _unitOfWork.Save();
-                TempData["success"] = "Category created successfully";
+                if (obj.Id == 0)
+                {
 
-                return RedirectToAction("Index");
+                    if (obj.Name == obj.DisplayOrder.ToString())
+                    {
+                        ModelState.AddModelError("Custom ", "Name can't be equal Display Order");
+                    }
+
+
+                    _unitOfWork.Category.Add(obj);
+                    _unitOfWork.Save();
+                    TempData["success"] = "Category created successfully";
+
+                    return RedirectToAction("Index");
+
+
+                }
+                else
+                {
+
+                    _unitOfWork.Category.Update(obj);
+                    _unitOfWork.Save();
+                    TempData["success"] = "Category updated successfully";
+
+
+                    return RedirectToAction("Index");
+
+                }
+
             }
+
             else
             {
                 return View(obj);
             }
-        }
 
-
-        [HttpGet]
-        public IActionResult Edit(int id)
-        {
-            if (id <= 0)
-            {
-                return NotFound();
-            }
-            Category? categoryFromDB = _unitOfWork.Category.Get(c => c.Id == id);
-            if (categoryFromDB == null)
-            {
-                return NotFound();
-            }
-            return View(categoryFromDB);
-        }
-        [HttpPost]
-        public  IActionResult Edit(Category obj)
-        {
-
-
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.Category.Update(obj);
-                 _unitOfWork.Save();
-                TempData["success"] = "Category updated successfully";
-
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                return View(obj);
-            }
         }
 
 
@@ -99,11 +100,11 @@ namespace BookStore.Areas.Admin.Controllers
             return View(categoryFromDB);
         }
         [HttpPost, ActionName("Delete")]
-        public  IActionResult DeletePost(int id)
+        public IActionResult DeletePost(int id)
         {
 
 
-            Category? obj = _unitOfWork.Category.Get(e=> e.Id == id);
+            Category? obj = _unitOfWork.Category.Get(e => e.Id == id);
 
 
             _unitOfWork.Category.Remove(obj);
