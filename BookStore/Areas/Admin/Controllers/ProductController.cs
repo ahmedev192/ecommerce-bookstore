@@ -1,8 +1,9 @@
-﻿using BookStore.DataAccess.Repository.IRepository;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using BookStore.DataAccess.Repository.IRepository;
 using BookStore.Models;
 using BookStore.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 
 namespace BookStore.Areas.Admin.Controllers
 {
@@ -10,9 +11,12 @@ namespace BookStore.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ProductController(IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
+
         }
         public IActionResult Index()
         {
@@ -45,21 +49,76 @@ namespace BookStore.Areas.Admin.Controllers
             }
 
         }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Upsert(ProductVM productVM, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
-                // Check if we're creating or updating
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                string productFolderPath = Path.Combine(wwwRootPath, "images", "products");
+                string fileName = file != null ? Guid.NewGuid().ToString() + Path.GetExtension(file.FileName) : string.Empty;
+
                 if (productVM.Product.Id == 0)
                 {
+                    // CREATE
+                    if (file != null)
+                    {
+                        using (var fileStream = new FileStream(Path.Combine(productFolderPath, fileName), FileMode.Create))
+                        {
+                            file.CopyTo(fileStream);
+                        }
+                        productVM.Product.ImageUrl = @"\images\products\" + fileName;
+                    }
+
                     _unitOfWork.Product.Add(productVM.Product);
                     TempData["success"] = "Product created successfully";
                 }
                 else
                 {
-                    _unitOfWork.Product.Update(productVM.Product);
+                    // UPDATE
+                    var productFromDb = _unitOfWork.Product.Get(u => u.Id == productVM.Product.Id);
+
+                    if (productFromDb == null)
+                    {
+                        return NotFound();
+                    }
+
+                    if (file != null)
+                    {
+                        // Delete old image
+                        if (!string.IsNullOrEmpty(productFromDb.ImageUrl))
+                        {
+                            var oldImagePath = Path.Combine(wwwRootPath, productFromDb.ImageUrl.TrimStart('\\'));
+                            if (System.IO.File.Exists(oldImagePath))
+                            {
+                                System.IO.File.Delete(oldImagePath);
+                            }
+                        }
+
+                        // Save new image
+                        using (var fileStream = new FileStream(Path.Combine(productFolderPath, fileName), FileMode.Create))
+                        {
+                            file.CopyTo(fileStream);
+                        }
+
+                        productFromDb.ImageUrl = @"\images\products\" + fileName;
+                    }
+
+                    // Update other properties
+                    productFromDb.Title = productVM.Product.Title;
+                    productFromDb.Description = productVM.Product.Description;
+                    productFromDb.ISBN = productVM.Product.ISBN;
+                    productFromDb.Author = productVM.Product.Author;
+                    productFromDb.ListPrice = productVM.Product.ListPrice;
+                    productFromDb.Price = productVM.Product.Price;
+                    productFromDb.Price50 = productVM.Product.Price50;
+                    productFromDb.Price100 = productVM.Product.Price100;
+                    productFromDb.CategoryId = productVM.Product.CategoryId;
+
+                    _unitOfWork.Product.Update(productFromDb);
                     TempData["success"] = "Product updated successfully";
                 }
 
@@ -68,7 +127,6 @@ namespace BookStore.Areas.Admin.Controllers
             }
             else
             {
-                // Re-populate dropdown if validation fails
                 productVM.CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
                 {
                     Text = u.Name,
@@ -78,7 +136,6 @@ namespace BookStore.Areas.Admin.Controllers
                 return View(productVM);
             }
         }
-
 
 
         public IActionResult Delete(int? id)

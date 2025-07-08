@@ -4,7 +4,7 @@
 	<div class="card-header bg-secondary bg-gradient ml-0 py-3">
 		<div class="row">
 			<div class="col-12 text-center">
-				<h2 class="text-white py-2">  @(Model != null && Model.Product.Id !=0 ? "Edit " : "Create " ) Product</h2>
+				<h2 class="text-white py-2">  @(Model != null && Model.Product.Id != 0 ? "Edit " : "Create ") Product</h2>
 			</div>
 		</div>
 	</div>
@@ -20,6 +20,12 @@
 					<label asp-for="Product.Title" class="ms-2"></label>
 					<span asp-validation-for="Product.Title" class="text-danger"></span>
 				</div>
+
+
+
+
+
+
 
 				<div class="form-floating py-2 col-12">
 					<select asp-for="Product.CategoryId" class="form-select border-0 shadow" asp-items="@Model.CategoryList">
@@ -72,9 +78,20 @@
 					</div>
 
 					<div class="form-floating py-2 col-12">
-						<input type="file" class="form-control border-0 shadow" />
+						<input type="file" name="file" class="form-control border-0 shadow" />
 						<label asp-for="Product.ImageUrl" class="ms-2"></label>
 					</div>
+					@if (Model != null && Model.Product.Id != 0 && !string.IsNullOrEmpty(Model.Product.ImageUrl))
+					{
+						<div class="my-3 text-center">
+							<label  style="display : block ; " class="mb-3">Old Image</label>
+							<img src="@Url.Content(Model.Product.ImageUrl)"
+								 class="img-fluid rounded border shadow"
+								 style="max-height: 250px; object-fit: contain;" />
+						</div>
+					}
+
+
 
 					<div class="row pt-2">
 						<div class="col-6 col-md-3">
