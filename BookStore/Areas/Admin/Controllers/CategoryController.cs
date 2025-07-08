@@ -22,36 +22,36 @@ namespace BookStore.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Upsert(int? id )
+        public IActionResult Upsert(int? id)
         {
-            if (id == 0 || id == null)
+            if (!id.HasValue)
             {
                 return View();
-            }else
-            {
-
+            }
+            else { 
                 Category? categoryFromDB = _unitOfWork.Category.Get(c => c.Id == id);
-                if (categoryFromDB == null)
-                {
-                    return NotFound();
-                }
-                return View(categoryFromDB);
+            if (categoryFromDB == null)
+            {
+                return NotFound();
+            }
+            return View(categoryFromDB);
             }
         }
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+
         public IActionResult Upsert(Category obj)
         {
+            if (obj.Name == obj.DisplayOrder.ToString())
+            {
+                ModelState.AddModelError("Name", "Name can't be equal to Display Order");
+            }
             if (ModelState.IsValid)
             {
                 if (obj.Id == 0)
                 {
-
-                    if (obj.Name == obj.DisplayOrder.ToString())
-                    {
-                        ModelState.AddModelError("Custom ", "Name can't be equal Display Order");
-                    }
 
 
                     _unitOfWork.Category.Add(obj);
