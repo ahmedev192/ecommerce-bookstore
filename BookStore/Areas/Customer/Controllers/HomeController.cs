@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using BookStore.DataAccess.Data;
+using BookStore.DataAccess.Repository;
+using BookStore.DataAccess.Repository.IRepository;
 using BookStore.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,18 +11,19 @@ namespace BookStore.Areas.Customer.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext _dbContext;
-
-        public HomeController(ILogger<HomeController> logger , ApplicationDbContext dbContext)
+        private readonly IUnitOfWork _unitOfWork;
+        public HomeController(ILogger<HomeController> logger , IUnitOfWork unitOfWork)
         {
             _logger = logger;
-            _dbContext = dbContext;
+            _unitOfWork = unitOfWork;
         }
 
 
         public IActionResult Index()
         {
-            return View();
+            IEnumerable<Product> products = _unitOfWork.Product.GetAll(includeProperties: "Category");
+            return View(products);
+
         }
 
         public IActionResult Privacy()
