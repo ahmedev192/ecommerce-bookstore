@@ -15,3 +15,4 @@ namespace BookStore.Utilities
             return Task.CompletedTask;
         }
     }
+}
