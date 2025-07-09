@@ -88,16 +88,8 @@ namespace BookStore.Areas.Admin.Controllers
 
                     if (file != null)
                     {
-                        // Delete old image
-                        if (!string.IsNullOrEmpty(productFromDb.ImageUrl))
-                        {
-                            var oldImagePath = Path.Combine(wwwRootPath, productFromDb.ImageUrl.TrimStart('\\'));
-                            if (System.IO.File.Exists(oldImagePath))
-                            {
-                                System.IO.File.Delete(oldImagePath);
-                            }
-                        }
 
+                        DeleteImageIfExists(productFromDb.ImageUrl);
                         // Save new image
                         using (var fileStream = new FileStream(Path.Combine(productFolderPath, fileName), FileMode.Create))
                         {
@@ -152,6 +144,8 @@ namespace BookStore.Areas.Admin.Controllers
             }
             return View(productFromDb);
         }
+
+
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePOST(int? id)
         {
@@ -160,10 +154,33 @@ namespace BookStore.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
+            // Delete image from wwwroot if it exists
+            DeleteImageIfExists(obj.ImageUrl);
+
+            // Delete product from DB
             _unitOfWork.Product.Remove(obj);
             _unitOfWork.Save();
             TempData["success"] = "Product deleted successfully";
             return RedirectToAction("Index");
         }
+
+
+        private void DeleteImageIfExists(string imageUrl)
+        {
+            if (!string.IsNullOrEmpty(imageUrl))
+            {
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                string imagePath = Path.Combine(wwwRootPath, imageUrl.TrimStart('\\'));
+
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+            }
+        }
+
+
+
     }
 }
