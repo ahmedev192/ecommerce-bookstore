@@ -8,8 +8,8 @@
 				<div class="col-12 p-1">
 					<div class="card p-3 border-top border-5 rounded border-0 shadow">
 						<img src="@(string.IsNullOrEmpty(product.ImageUrl)
-									 		  ? Url.Content("~/images/defaults/high-angle-shot-river-going-through-tropical-forest-full-trees.jpg")
-									 		  : Url.Content(product.ImageUrl))" class="card-img-top rounded" />
+												   		  ? Url.Content("~/images/defaults/high-angle-shot-river-going-through-tropical-forest-full-trees.jpg")
+												  		  : Url.Content(product.ImageUrl))" class="card-img-top rounded" />
 					<div class="card-body pb-0">
 						<div class="pl-1">
 							<p class="card-title h5 text-dark text-uppercase text-center opacity-75">@product.Title</p>
@@ -33,7 +33,9 @@
 						</div>
 					</div>
 					<div>
-						<a href="#" class="btn btn-primary bg-gradient form-control border-0">
+						<a asp-action="Details"
+						   asp-route-productId="@product.Id"
+						   class="btn btn-primary bg-gradient form-control border-0">
 							Details
 						</a>
 					</div>
