@@ -168,6 +168,12 @@ namespace BookStore.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+                if (Input.Role == SD.Role_Company)
+                {
+                    user.CompanyId = Input.CompanyId;
+                }
+
                 user.StreetAddress = Input.StreetAddress;
                 user.City = Input.City;
                 user.Name = Input.Name;
