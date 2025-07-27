@@ -61,3 +61,12 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+
+wwwroot/**/*.css linguist-vendored
+wwwroot/**/*.js linguist-vendored
+wwwroot/**/*.min.js linguist-vendored
+wwwroot/**/*.map linguist-vendored
+wwwroot/**/*.woff linguist-vendored
+wwwroot/**/*.woff2 linguist-vendored
+wwwroot/**/*.ttf linguist-vendored

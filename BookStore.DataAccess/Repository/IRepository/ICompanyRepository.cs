@@ -1,13 +1,13 @@
-﻿using System;
+﻿using BookStore.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BookStore.Models;
 
 namespace BookStore.DataAccess.Repository.IRepository
 {
-    public interface ICompanyRepository : IRepository.IRepository<Company>
+    public interface ICompanyRepository : IRepository<Company>
     {
         void Update(Company obj);
     }

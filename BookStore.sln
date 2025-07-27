@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookStore", "BookStore\BookStore.csproj", "{8DDBAEE7-8614-44DD-BAF6-A351FFD9486D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookStore.DataAccess", "BookStore.DataAccess\BookStore.DataAccess.csproj", "{5E31BCF5-4240-48E1-A2B2-864E86287BB2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{19DBD960-7AF3-4E5A-B86B-FF3B95C07531} = {19DBD960-7AF3-4E5A-B86B-FF3B95C07531}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookStore.Models", "BookStore.Models\BookStore.Models.csproj", "{3CE61CA0-18C9-46FA-B799-18E4BDAF10B9}"
 EndProject

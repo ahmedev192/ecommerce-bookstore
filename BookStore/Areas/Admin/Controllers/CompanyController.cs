@@ -1,122 +1,101 @@
-﻿using BookStore.DataAccess.Repository.IRepository;
+﻿using BookStore.DataAccess;
+using BookStore.DataAccess.Repository.IRepository;
 using BookStore.Models;
+using BookStore.Models.ViewModels;
 using BookStore.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
-namespace BookStore.Areas.Admin.Controllers
+namespace BookStoreWeb.Controllers;
+[Area("Admin")]
+[Authorize(Roles = SD.Role_Admin)]
+public class CompanyController : Controller
 {
-    [Area("Admin")]
-    [Authorize(Roles = SD.Role_Admin)]
-    public class CompanyController : Controller
+    private readonly IUnitOfWork _unitOfWork;
+
+    public CompanyController(IUnitOfWork unitOfWork)
     {
-        private readonly IUnitOfWork _unitOfWork;
+        _unitOfWork = unitOfWork;
+    }
 
-        public CompanyController(IUnitOfWork db)
-        {
-            _unitOfWork = db;
-        }
-        public IActionResult Index()
-        {
-            List<Company> objCompanyList = _unitOfWork.Company.GetAll().ToList();
-            return View(objCompanyList);
-        }
+    public IActionResult Index()
+    {
+        return View();
+    }
 
-        [HttpGet]
-        public IActionResult Upsert(int? id)
+    //GET
+    public IActionResult Upsert(int? id)
+    {
+        Company company = new();
+
+        if (id == null || id == 0)
         {
-            if (!id.HasValue)
+            return View(company);
+        }
+        else
+        {
+            company = _unitOfWork.Company.GetFirstOrDefault(u => u.Id == id);
+            return View(company);
+        }
+    }
+
+    //POST
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Upsert(Company obj, IFormFile? file)
+    {
+
+        if (ModelState.IsValid)
+        {
+            
+            if (obj.Id == 0)
             {
-                return View();
+                _unitOfWork.Company.Add(obj);
+                TempData["success"] = "Company created successfully";
             }
             else
             {
-                Company? CompanyFromDB = _unitOfWork.Company.Get(c => c.Id == id);
-                if (CompanyFromDB == null)
-                {
-                    return NotFound();
-                }
-                return View(CompanyFromDB);
+                _unitOfWork.Company.Update(obj);
+                TempData["success"] = "Company updated successfully";
             }
-        }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-
-        public IActionResult Upsert(Company obj)
-        {
-
-            if (ModelState.IsValid)
-            {
-                if (obj.Id == 0)
-                {
-
-
-                    _unitOfWork.Company.Add(obj);
-                    _unitOfWork.Save();
-                    TempData["success"] = "Company created successfully";
-
-                    return RedirectToAction("Index");
-
-
-                }
-                else
-                {
-
-                    _unitOfWork.Company.Update(obj);
-                    _unitOfWork.Save();
-                    TempData["success"] = "Company updated successfully";
-
-
-                    return RedirectToAction("Index");
-
-                }
-
-            }
-
-            else
-            {
-                return View(obj);
-            }
-
-        }
-
-
-
-        [HttpGet]
-        public IActionResult Delete(int id)
-        {
-            if (id <= 0)
-            {
-                return NotFound();
-            }
-            Company? CompanyFromDB = _unitOfWork.Company.Get(c => c.Id == id);
-            if (CompanyFromDB == null)
-            {
-                return NotFound();
-            }
-            return View(CompanyFromDB);
-        }
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePost(int id)
-        {
-
-
-            Company? obj = _unitOfWork.Company.Get(e => e.Id == id);
-
-
-            _unitOfWork.Company.Remove(obj);
             _unitOfWork.Save();
-            TempData["success"] = "Company deleted successfully";
-
-
+            
             return RedirectToAction("Index");
+        }
+        return View(obj);
+    }
 
 
+
+    #region API CALLS
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var companyList = _unitOfWork.Company.GetAll();
+        return Json(new { data = companyList });
+    }
+
+    //POST
+    [HttpDelete]
+    public IActionResult Delete(int? id)
+    {
+        var obj = _unitOfWork.Company.GetFirstOrDefault(u => u.Id == id);
+        if (obj == null)
+        {
+            return Json(new { success = false, message = "Error while deleting" });
         }
 
-
+        _unitOfWork.Company.Remove(obj);
+        _unitOfWork.Save();
+        return Json(new { success = true, message = "Delete Successful" });
 
     }
+    #endregion
 }
