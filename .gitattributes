@@ -63,10 +63,11 @@
 #*.RTF   diff=astextplain
 
 
-wwwroot/**/*.css linguist-vendored
-wwwroot/**/*.js linguist-vendored
-wwwroot/**/*.min.js linguist-vendored
-wwwroot/**/*.map linguist-vendored
-wwwroot/**/*.woff linguist-vendored
-wwwroot/**/*.woff2 linguist-vendored
-wwwroot/**/*.ttf linguist-vendored
+
+BookStore/wwwroot/**/*.css linguist-vendored
+BookStore/wwwroot/**/*.js linguist-vendored
+BookStore/wwwroot/**/*.min.js linguist-vendored
+BookStore/wwwroot/**/*.map linguist-vendored
+BookStore/wwwroot/**/*.woff linguist-vendored
+BookStore/wwwroot/**/*.woff2 linguist-vendored
+BookStore/wwwroot/**/*.ttf linguist-vendored
